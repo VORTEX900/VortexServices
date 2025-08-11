@@ -1,0 +1,6 @@
+
+da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\AuthModule "
+
+per fare la build su docker digitare -> " docker build -t auth-service . "
+
+per lanciare spring boot su docker digitare -> " docker run -p 8080:8080 auth-service "
