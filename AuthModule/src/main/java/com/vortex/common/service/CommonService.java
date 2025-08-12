@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vortex.bean.RegisterRequest;
-import com.vortex.model.TypeUserRole;
 import com.vortex.model.User;
 import com.vortex.repository.TypeRoleRepository;
 import com.vortex.repository.UserRepository;

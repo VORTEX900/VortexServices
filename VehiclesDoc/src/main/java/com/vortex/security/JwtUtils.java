@@ -1,52 +1,26 @@
 package com.vortex.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
 
     private final String jwtSecret = "gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"; // 64 chars = 512 bit!;
-    private final long jwtExpirationMs = 86400000; // 1 giorno
+ // Usa la stessa chiave segreta con cui il microservizio Y ha firmato il token
+    private final Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
-    // 🔐 Metodo helper: converte la secret in chiave compatibile
-    private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String generateJwtToken(UserDetailsImpl userPrincipal) {
-        return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getKey(), SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    public String getUserNameFromJwtToken(String token) {
+    // Questo metodo verifica il token e ritorna i claims decodificati
+    public Claims validateTokenAndGetClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getKey())
+                .setSigningKey(key)   // imposta la chiave per verificare la firma
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public boolean validateJwtToken(String authToken) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getKey())
-                    .build()
-                    .parseClaimsJws(authToken);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            System.err.println("Invalid JWT token: " + e.getMessage());
-        }
-        return false;
+                .parseClaimsJws(token)  // verifica firma e scadenza
+                .getBody();
     }
 }
