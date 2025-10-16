@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.vortex</groupId>
-	<artifactId>VehiclesDoc</artifactId>
+	<artifactId>vehicles-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>VehiclesDoc</name>
 	<description>Demo project for Spring Boot</description>

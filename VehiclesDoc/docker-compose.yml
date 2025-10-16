@@ -1,0 +1,23 @@
+
+services:
+  auth-service:
+    build:
+      context: ../AuthModule/
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"  # host:container
+    networks:
+      - app-network
+
+  vehicles-service:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,10 +1,10 @@
 
 ------------------------------ DOCKER --------------------------------------------------------------------------------------------------------------------------------
-da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\AuthModule "
+da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\VehiclesDoc "
 
-per fare la build su docker digitare -> " docker build -t auth-service . "
+per fare la build su docker digitare -> " docker build -t vehicles-service . "
 
-per lanciare spring boot su docker digitare -> " docker run -p 8080:8080 auth-service "
+per lanciare spring boot su docker digitare -> " docker run -p 8081:8081 vehicles-service "
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ------------------------------ DOCKER COMPOSE ------------------------------------------------------------------------------------------------------------------------
