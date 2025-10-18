@@ -1,0 +1,15 @@
+
+------------------------------ DOCKER --------------------------------------------------------------------------------------------------------------------------------
+da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\Expiration "
+
+per fare la build su docker digitare -> " docker build -t expiration-service . "
+
+per lanciare spring boot su docker digitare -> " docker run -p 8080:8080 expiration-service "
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------ DOCKER COMPOSE ------------------------------------------------------------------------------------------------------------------------
+da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\VehiclesDoc "
+
+per lanciare docker compose con rebuild immagini -> docker-compose up --build
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
