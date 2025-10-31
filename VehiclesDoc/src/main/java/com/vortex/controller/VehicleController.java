@@ -3,6 +3,8 @@ package com.vortex.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vortex.bean.RegisterVehicleRequest;
+import com.vortex.services.VehicleServices;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/vehicle")
 public class VehicleController {
+	
+	Logger log = LogManager.getLogger(VehicleController.class);
+	
+	private final VehicleServices vehicleServices;
+	
+	public VehicleController(VehicleServices vehicleServices) {
+		this.vehicleServices = vehicleServices;
+	}
 
 	@GetMapping("/serverCheck")
     public ResponseEntity<?> serverCheck() {
@@ -31,14 +42,17 @@ public class VehicleController {
         return ResponseEntity.ok(response);
     }
 	
-//	@PostMapping("/registerVehicle")
-//	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest vehicle) {
-//       
-//
-//        return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
-//    }
-//	
-	 @GetMapping("/whoami")
+	@PostMapping("/registerVehicle")
+	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest vehicle) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+		log.info("Entro1");
+		vehicleServices.insertVehicle(vehicle, principal.toString());
+		
+        return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
+    }
+
+	@GetMapping("/whoami")
 	 public String whoAmI() {
 	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	        
