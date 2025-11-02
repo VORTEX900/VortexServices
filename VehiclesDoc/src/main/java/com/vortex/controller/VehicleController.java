@@ -1,6 +1,7 @@
 package com.vortex.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vortex.bean.DeleteVehicleRequest;
+import com.vortex.bean.ReadVehicleRequest;
 import com.vortex.bean.RegisterVehicleRequest;
+import com.vortex.model.Vehicle;
 import com.vortex.services.VehicleServices;
 
 import jakarta.validation.Valid;
@@ -43,13 +47,43 @@ public class VehicleController {
     }
 	
 	@PostMapping("/registerVehicle")
-	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest vehicle) {
+	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest req) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Object principal = authentication.getPrincipal();
-		log.info("Entro1");
-		vehicleServices.insertVehicle(vehicle, principal.toString());
+
+		vehicleServices.createVehicle(req, principal.toString());
 		
         return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
+    }
+	
+	@PostMapping("/updateVehicle")
+	public ResponseEntity<?> updateVehicle (@Valid @RequestBody RegisterVehicleRequest req) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+
+		vehicleServices.UpdateVehicle(req, principal.toString());
+		
+        return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
+    }
+	
+	@PostMapping("/deleteVehicle")
+	public ResponseEntity<?> deleteVehicle (@Valid @RequestBody DeleteVehicleRequest req) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+
+		vehicleServices.deleteVehicle(req.getVin(), req.getLicensePlate());
+		
+        return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
+    }
+	
+	@GetMapping("/readVehicle")
+	public List<Vehicle> readVehicle (@Valid @RequestBody ReadVehicleRequest req) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+
+		List<Vehicle> vehicles = vehicleServices.readVehicles(req.getAlias());
+		
+        return vehicles;
     }
 
 	@GetMapping("/whoami")
