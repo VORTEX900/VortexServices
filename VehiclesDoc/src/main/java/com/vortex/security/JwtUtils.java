@@ -2,6 +2,7 @@ package com.vortex.security;
 
 import java.security.Key;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Component
+@ConditionalOnProperty(name = "vehicle.security.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtUtils {
 
     private final String jwtSecret = "gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"; // 64 chars = 512 bit!;
