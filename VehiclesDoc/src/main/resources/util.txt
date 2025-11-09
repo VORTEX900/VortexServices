@@ -7,8 +7,91 @@ per fare la build su docker digitare -> " docker build -t vehicles-service . "
 per lanciare spring boot su docker digitare -> " docker run -p 8081:8081 vehicles-service "
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 ------------------------------ DOCKER COMPOSE ------------------------------------------------------------------------------------------------------------------------
 da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\VehiclesDoc "
 
 per lanciare docker compose con rebuild immagini docker-compose up --build
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------ VAULT --------------------------------------------------------------------------------------------------------------------------------
+>> UTILIZZO DI VAULT <<<
+
+>>> aggiungo nel docker compose, controllare la versione <<<
+vault:
+     image: hashicorp/vault:1.14.1
+     container_name: vault
+     ports:
+       - "8200:8200"
+     environment:
+       VAULT_DEV_ROOT_TOKEN_ID: "root"
+       VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+     cap_add:
+       - IPC_LOCK
+     networks:
+       - app-network
+
+
+
+>>> controllo lo stato dei vari container per vedere se c'è Vault <<<
+PS C:\Users\flame> docker ps -> 
+CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS          PORTS                              NAMES
+cff79dc90106   vehiclesdoc-api-gateway          "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8083->8083/tcp   api-gateway
+c901e3dcd125   vehiclesdoc-expiration-service   "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8082->8082/tcp   expiration-service
+cee685ec885a   vehiclesdoc-auth-service         "java -jar app.jar"      18 minutes ago   Up 18 minutes   0.0.0.0:8080->8080/tcp             vehiclesdoc-auth-service-1
+fbf2aa789033   vehiclesdoc-vehicles-service     "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8081->8081/tcp   vehiclesdoc-vehicles-service-1
+077a8d085c20   apache/kafka:latest              "/__cacert_entrypoin…"   18 minutes ago   Up 18 minutes   0.0.0.0:9092->9092/tcp             kafka
+8a7d71d9a23a   hashicorp/vault:1.14.1           "docker-entrypoint.s…"   18 minutes ago   Up 18 minutes   0.0.0.0:8200->8200/tcp             vault
+
+
+>>> controllo la porta esposta da vault <<<
+PS C:\Users\flame> Invoke-RestMethod -Uri "http://127.0.0.1:8200/v1/sys/health"  
+
+initialized                  : True
+sealed                       : False
+standby                      : False
+performance_standby          : False
+replication_performance_mode : disabled
+replication_dr_mode          : disabled
+server_time_utc              : 1762717081
+version                      : 1.14.1
+cluster_name                 : vault-cluster-fb2745d3
+cluster_id                   : a2fa35ab-8809-06bd-897e-f281e250c17d
+
+
+>>> setto la secret con nomeToken e secret vero e proprio es."secret qualsiasi"
+PS C:\Users\flame> $vaultUrl = "http://127.0.0.1:8200"
+PS C:\Users\flame> $token = "root"
+PS C:\Users\flame> $secretPath = "secret/data/nomeToken"
+PS C:\Users\flame> $body = @{
+>>     data = @{
+>>         password = "secret qualsiasi"
+>>     }
+>> } | ConvertTo-Json
+PS C:\Users\flame> Invoke-RestMethod -Uri "$vaultUrl/v1/$secretPath" -Method POST -Headers @{ "X-Vault-Token" = $token } -Body $body -ContentType "application/json"
+
+request_id     : 88b59be6-cdfd-7d14-efa7-609c8f230315
+lease_id       :
+renewable      : False
+lease_duration : 0
+data           : @{created_time=2025-11-09T19:39:40.153090733Z; custom_metadata=; deletion_time=; destroyed=False; version=1}
+wrap_info      :
+warnings       :
+auth           :
+
+
+>>> controllo e vedo effettivamente la password <<<
+PS C:\Users\flame> $response = Invoke-RestMethod -Uri "$vaultUrl/v1/secret/data/nomeToken" -Method GET -Headers @{ "X-Vault-Token" = $token }
+PS C:\Users\flame> $response.data.data
+
+password
+--------
+secret qualsiasi
+
+
+>>> vedo la lista delle chiavi salvate <<<
+
+PS C:\Users\flame> $response = Invoke-RestMethod -Uri "$vaultUrl/v1/secret/metadata/?list=true" -Method GET -Headers @{ "X-Vault-Token" = $token }
+PS C:\Users\flame> $response.data.keys
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
