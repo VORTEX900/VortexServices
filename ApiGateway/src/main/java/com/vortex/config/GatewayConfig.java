@@ -12,12 +12,12 @@ public class GatewayConfig {
         RouteLocator locator = builder.routes()
             .route("vehicle-service", r -> r.path("/vehicle/**")
                 .filters(f -> f.stripPrefix(0)) 
-                //.uri("http://localhost:8081"))//locale
-            	.uri("http://vehicles-service:8081"))//docker
+                .uri("http://localhost:8081"))//locale
+            	//.uri("http://vehicles-service:8081"))//docker
             .route("expiration-service", r -> r.path("/expiration/**")
             	    .filters(f -> f.stripPrefix(0))
-            	    //.uri("http://localhost:8082"))//locale
-            		.uri("http://expiration-service:8082"))//docker
+            	    .uri("http://localhost:8082"))//locale
+            		//.uri("http://expiration-service:8082"))//docker
             .build();
 
         locator.getRoutes().subscribe(route -> System.out.println("Registered route: " + route.getId()));

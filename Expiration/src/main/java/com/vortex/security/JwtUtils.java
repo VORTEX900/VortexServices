@@ -1,8 +1,11 @@
 package com.vortex.security;
 
-import java.security.Key;
+import java.nio.charset.StandardCharsets;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -10,17 +13,24 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Component
+@EnableConfigurationProperties(VaultConfig.class)
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtUtils {
 
-    private final String jwtSecret = "gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"; // 64 chars = 512 bit!;
- // Usa la stessa chiave segreta con cui il microservizio Y ha firmato il token
-    private final Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+	private final VaultConfig vaultConfig;
+	
+	public JwtUtils(VaultConfig vaultConfig) {
+		this.vaultConfig = vaultConfig;
+	}
+	
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(vaultConfig.getVortexSecretToken().getBytes(StandardCharsets.UTF_8));
+    }
 
     // Questo metodo verifica il token e ritorna i claims decodificati
     public Claims validateTokenAndGetClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)   // imposta la chiave per verificare la firma
+                .setSigningKey(getKey())   // imposta la chiave per verificare la firma
                 .build()
                 .parseClaimsJws(token)  // verifica firma e scadenza
                 .getBody();

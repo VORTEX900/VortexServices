@@ -9,7 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
+//@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig {
 
 	@Autowired

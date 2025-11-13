@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
+//@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired

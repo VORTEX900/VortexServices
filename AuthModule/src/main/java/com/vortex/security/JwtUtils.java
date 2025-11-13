@@ -1,22 +1,33 @@
 package com.vortex.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 @Component
+@EnableConfigurationProperties(VaultConfig.class)
 public class JwtUtils {
 
-    private final String jwtSecret = "gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"; // 64 chars = 512 bit!;
+	private final VaultConfig vaultConfig;
+	
+	public JwtUtils(VaultConfig vaultConfig) {
+		this.vaultConfig = vaultConfig;
+	}
+	
     private final long jwtExpirationMs = 86400000; // 1 giorno
 
-    // 🔐 Metodo helper: converte la secret in chiave compatibile
+    // Metodo helper: converte la secret in chiave compatibile
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(vaultConfig.getVortexSecretToken().getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {

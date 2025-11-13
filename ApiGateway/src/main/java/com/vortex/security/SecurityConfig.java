@@ -1,5 +1,6 @@
 package com.vortex.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -11,6 +12,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 	
+	@Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+	
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 	    http
@@ -19,14 +23,9 @@ public class SecurityConfig {
 	            .pathMatchers("/auth/**").permitAll()   // login, register, ecc.
 	            .anyExchange().authenticated()          // tutto il resto
 	        )
-	        .addFilterBefore(jwtAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION); // aggiungi il tuo filtro
+	        .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION); // aggiungi il tuo filtro
 
 	    return http.build();
 	}
 
-	@Bean
-	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-	    return new JwtAuthenticationFilter(); // il tuo filtro esistente
-	}
-	
 }

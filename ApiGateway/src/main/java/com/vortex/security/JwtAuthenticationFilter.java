@@ -1,7 +1,11 @@
 package com.vortex.security;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -15,9 +19,17 @@ import io.jsonwebtoken.Jwts;
 import reactor.core.publisher.Mono;
 
 @Component
+@EnableConfigurationProperties(VaultConfig.class)
 public class JwtAuthenticationFilter implements WebFilter {
 
-    private static final String SECRET_KEY = "gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1";
+    private final VaultConfig vaultConfig;
+    
+    Logger log = LogManager.getLogger(JwtAuthenticationFilter.class);
+    
+	public JwtAuthenticationFilter(VaultConfig vaultConfig) {
+		
+		this.vaultConfig = vaultConfig;
+	}
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -39,7 +51,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY.getBytes())
+                    .setSigningKey(vaultConfig.getVortexSecretToken().getBytes(StandardCharsets.UTF_8))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();

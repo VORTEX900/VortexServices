@@ -14,8 +14,19 @@ da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile
 per lanciare docker compose con rebuild immagini docker-compose up --build
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+------------------------------ VAULT LOCALE cmd--------------------------------------------------------------------------------------------------------------------------------
+installare vault, scaricando vault, ti dara una cartella con all'interno un .exe mettere la cartella nelle variabili di ambiente in PATH
+controllare se è tutto ok con "vault --version"
+"vault server -dev" avvia il server in locale in modalità "dev" e vi darà token e key per configurare vault
+nel file di properties aggiornare questo place holder "spring.cloud.vault.token" con la root token che ti restituisce il server vault
+setto il vault address "set VAULT_ADDR=http://127.0.0.1:8200"
+setto il token"set VAULT_TOKEN=hvs.U0KWvpIyhfUD7sL0wSG7ojyd"
+setto la possibile secret "vault kv put secret/application vault-config.vortexSecretToken=gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"
 
------------------------------- VAULT --------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------ VAULT SU DOCKER --------------------------------------------------------------------------------------------------------------------------------
 >> UTILIZZO DI VAULT <<<
 
 >>> aggiungo nel docker compose, controllare la versione <<<
@@ -35,7 +46,7 @@ vault:
 
 
 >>> controllo lo stato dei vari container per vedere se c'è Vault <<<
-PS C:\Users\flame> docker ps -> 
+PS C:\Users\flame> docker ps  
 CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS          PORTS                              NAMES
 cff79dc90106   vehiclesdoc-api-gateway          "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8083->8083/tcp   api-gateway
 c901e3dcd125   vehiclesdoc-expiration-service   "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8082->8082/tcp   expiration-service
@@ -59,39 +70,10 @@ version                      : 1.14.1
 cluster_name                 : vault-cluster-fb2745d3
 cluster_id                   : a2fa35ab-8809-06bd-897e-f281e250c17d
 
+PS C:\Users\flame> docker exec -it guide-vault sh   <- apro la vaultcli
+/ # export VAULT_TOKEN="00000000-0000-0000-0000-000000000000"    <- setto il token per avere i permessi eseguire operazioni
+/ # export VAULT_ADDR="http://127.0.0.1:8200"   <- setto l'indirizzo all'interno di docker
+/ # vault kv put secret/application vault-config.vortexSecretToken=gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1   <- setto il secret in application
+/ # vault kv list secret/   <- ritorno la lista dei secret salvati
 
->>> setto la secret con nomeToken e secret vero e proprio es."secret qualsiasi"
-PS C:\Users\flame> $vaultUrl = "http://127.0.0.1:8200"
-PS C:\Users\flame> $token = "root"
-PS C:\Users\flame> $secretPath = "secret/data/nomeToken"
-PS C:\Users\flame> $body = @{
->>     data = @{
->>         password = "secret qualsiasi"
->>     }
->> } | ConvertTo-Json
-PS C:\Users\flame> Invoke-RestMethod -Uri "$vaultUrl/v1/$secretPath" -Method POST -Headers @{ "X-Vault-Token" = $token } -Body $body -ContentType "application/json"
-
-request_id     : 88b59be6-cdfd-7d14-efa7-609c8f230315
-lease_id       :
-renewable      : False
-lease_duration : 0
-data           : @{created_time=2025-11-09T19:39:40.153090733Z; custom_metadata=; deletion_time=; destroyed=False; version=1}
-wrap_info      :
-warnings       :
-auth           :
-
-
->>> controllo e vedo effettivamente la password <<<
-PS C:\Users\flame> $response = Invoke-RestMethod -Uri "$vaultUrl/v1/secret/data/nomeToken" -Method GET -Headers @{ "X-Vault-Token" = $token }
-PS C:\Users\flame> $response.data.data
-
-password
---------
-secret qualsiasi
-
-
->>> vedo la lista delle chiavi salvate <<<
-
-PS C:\Users\flame> $response = Invoke-RestMethod -Uri "$vaultUrl/v1/secret/metadata/?list=true" -Method GET -Headers @{ "X-Vault-Token" = $token }
-PS C:\Users\flame> $response.data.keys
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
