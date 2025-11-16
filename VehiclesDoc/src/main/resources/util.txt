@@ -11,7 +11,7 @@ per lanciare spring boot su docker digitare -> " docker run -p 8081:8081 vehicle
 ------------------------------ DOCKER COMPOSE ------------------------------------------------------------------------------------------------------------------------
 da prompt dei comandi(cmd) andare nella cartella dove è contenuto il dockerfile -> " cd C:\Users\flame\Documents\eclipseProjects\vortexPJ\VehiclesDoc "
 
-per lanciare docker compose con rebuild immagini docker-compose up --build
+per lanciare docker compose con rebuild immagini -> docker-compose up --build
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ------------------------------ VAULT LOCALE cmd--------------------------------------------------------------------------------------------------------------------------------
@@ -20,10 +20,9 @@ controllare se è tutto ok con "vault --version"
 "vault server -dev" avvia il server in locale in modalità "dev" e vi darà token e key per configurare vault
 nel file di properties aggiornare questo place holder "spring.cloud.vault.token" con la root token che ti restituisce il server vault
 setto il vault address "set VAULT_ADDR=http://127.0.0.1:8200"
-setto il token"set VAULT_TOKEN=hvs.U0KWvpIyhfUD7sL0wSG7ojyd"
+setto il token"set VAULT_TOKEN=hvs.ZxvIcvTyQrskJdybxFJsRPDs"
 setto la possibile secret "vault kv put secret/application vault-config.vortexSecretToken=gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"
-
-
+ritorno la lista dei secret salvati "vault kv list secret/"
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ------------------------------ VAULT SU DOCKER --------------------------------------------------------------------------------------------------------------------------------
@@ -43,20 +42,10 @@ vault:
      networks:
        - app-network
 
-
-
 >>> controllo lo stato dei vari container per vedere se c'è Vault <<<
 PS C:\Users\flame> docker ps  
-CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS          PORTS                              NAMES
-cff79dc90106   vehiclesdoc-api-gateway          "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8083->8083/tcp   api-gateway
-c901e3dcd125   vehiclesdoc-expiration-service   "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8082->8082/tcp   expiration-service
-cee685ec885a   vehiclesdoc-auth-service         "java -jar app.jar"      18 minutes ago   Up 18 minutes   0.0.0.0:8080->8080/tcp             vehiclesdoc-auth-service-1
-fbf2aa789033   vehiclesdoc-vehicles-service     "java -jar app.jar"      18 minutes ago   Up 18 minutes   8080/tcp, 0.0.0.0:8081->8081/tcp   vehiclesdoc-vehicles-service-1
-077a8d085c20   apache/kafka:latest              "/__cacert_entrypoin…"   18 minutes ago   Up 18 minutes   0.0.0.0:9092->9092/tcp             kafka
-8a7d71d9a23a   hashicorp/vault:1.14.1           "docker-entrypoint.s…"   18 minutes ago   Up 18 minutes   0.0.0.0:8200->8200/tcp             vault
 
-
->>> controllo la porta esposta da vault <<<
+>>> controllo lo stato di vault <<<
 PS C:\Users\flame> Invoke-RestMethod -Uri "http://127.0.0.1:8200/v1/sys/health"  
 
 initialized                  : True

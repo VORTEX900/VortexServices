@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 @EnableConfigurationProperties(VaultConfig.class)
-//@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "security.enabled", havingValue = "true", matchIfMissing = true)
 public class JwtUtils {
 
 	private final VaultConfig vaultConfig;

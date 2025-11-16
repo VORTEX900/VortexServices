@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +37,7 @@ public class VehicleController {
 	public VehicleController(VehicleServices vehicleServices) {
 		this.vehicleServices = vehicleServices;
 	}
-
+	
 	@GetMapping("/serverCheck")
     public ResponseEntity<?> serverCheck() {
 
@@ -47,29 +48,31 @@ public class VehicleController {
     }
 	
 	@PostMapping("/registerVehicle")
-	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest req) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Object principal = authentication.getPrincipal();
+	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest req,
+			@RequestHeader("X-User-Id") String userId
+		    ) {
+		String principal = getPrincipal(userId);
 
-		vehicleServices.createVehicle(req, principal.toString());
+		vehicleServices.createVehicle(req, principal);
 		
         return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
     }
 	
 	@PostMapping("/updateVehicle")
-	public ResponseEntity<?> updateVehicle (@Valid @RequestBody RegisterVehicleRequest req) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Object principal = authentication.getPrincipal();
+	public ResponseEntity<?> updateVehicle (@Valid @RequestBody RegisterVehicleRequest req,
+			@RequestHeader("X-User-Id") String userId
+		    ) {
+		String principal = getPrincipal(userId);
 
-		vehicleServices.UpdateVehicle(req, principal.toString());
+		vehicleServices.UpdateVehicle(req, principal);
 		
         return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
     }
 	
 	@PostMapping("/deleteVehicle")
-	public ResponseEntity<?> deleteVehicle (@Valid @RequestBody DeleteVehicleRequest req) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Object principal = authentication.getPrincipal();
+	public ResponseEntity<?> deleteVehicle (@Valid @RequestBody DeleteVehicleRequest req,
+			@RequestHeader("X-User-Id") String userId
+		    ) {
 
 		vehicleServices.deleteVehicle(req.getVin(), req.getLicensePlate());
 		
@@ -77,9 +80,9 @@ public class VehicleController {
     }
 	
 	@GetMapping("/readVehicle")
-	public List<Vehicle> readVehicle (@Valid @RequestBody ReadVehicleRequest req) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Object principal = authentication.getPrincipal();
+	public List<Vehicle> readVehicle (@Valid @RequestBody ReadVehicleRequest req,
+			@RequestHeader("X-User-Id") String userId
+		    ) {
 
 		List<Vehicle> vehicles = vehicleServices.readVehicles(req.getAlias());
 		
@@ -87,17 +90,55 @@ public class VehicleController {
     }
 
 	@GetMapping("/whoami")
-	 public String whoAmI() {
-	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	        
-	        if (authentication == null || !authentication.isAuthenticated()) {
-	            return "Utente non autenticato";
-	        }
-
-	        // Qui assumiamo che il principal sia lo userId (string o Long)
-	        Object principal = authentication.getPrincipal();
-
-	        return "Utente autenticato: " + principal.toString();
+	public String whoAmI(@RequestHeader("X-User-Id") String userId) {
+		
+	    if (isAuthenticated(userId)) {
+	    	return "Utente non autenticato";
 	    }
+
+	    Object principal = getPrincipal(userId);
+
+	    return "Utente autenticato: " + principal.toString();
+	  }
+	
+	public boolean isAuthenticated(String userId) {
+		
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (authentication == null || !authentication.isAuthenticated()) {
+			    return false;
+			}else { 
+				return true;
+			}
+		}catch(Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		if (userId == null || userId.isEmpty()) {
+	        return false;
+	    }else {
+	    	return true;
+	    }
+		
+	}
+	
+	public String getPrincipal(String userId) {
+		
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (authentication == null || !authentication.isAuthenticated()) {
+				log.error(">>> authentication is NULL...");
+			}else { 
+				return authentication.getPrincipal()==null?null:authentication.getPrincipal().toString();
+			}
+		}catch(Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		if (userId == null || userId.isEmpty()) {
+	        return null;
+	    }else {
+	    	return userId;
+	    }
+		
+	}
 	
 }
