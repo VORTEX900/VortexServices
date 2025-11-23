@@ -2,7 +2,6 @@ package com.vortex.common.service;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vortex.bean.RegisterRequest;
@@ -20,7 +19,6 @@ public class CommonService {
 	
 	private final SecurityConfig securityConfig;
 	
-	@Autowired
 	public CommonService(UserRepository userRepository, SecurityConfig securityConfig, TypeRoleRepository TypeRoleRepository) {
 	    this.userRepository = userRepository;
 	    this.securityConfig = securityConfig;

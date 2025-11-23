@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vortex.bean.DeleteVehicleRequest;
 import com.vortex.bean.ReadVehicleRequest;
 import com.vortex.bean.RegisterVehicleRequest;
+import com.vortex.feign.client.FeignCheckClient;
 import com.vortex.model.Vehicle;
 import com.vortex.services.VehicleServices;
 
@@ -34,8 +35,11 @@ public class VehicleController {
 	
 	private final VehicleServices vehicleServices;
 	
-	public VehicleController(VehicleServices vehicleServices) {
+	private final FeignCheckClient feignCheckClient;
+	
+	public VehicleController(VehicleServices vehicleServices, FeignCheckClient feignCheckClient) {
 		this.vehicleServices = vehicleServices;
+		this.feignCheckClient = feignCheckClient;
 	}
 	
 	@GetMapping("/serverCheck")
@@ -100,6 +104,12 @@ public class VehicleController {
 
 	    return "Utente autenticato: " + principal.toString();
 	  }
+	
+    @GetMapping("/call-server-check")
+    public ResponseEntity<?> callServerCheck() {
+        Map<String, Object> responseFromY = feignCheckClient.serverCheck();
+        return ResponseEntity.ok(responseFromY);
+    }
 	
 	public boolean isAuthenticated(String userId) {
 		

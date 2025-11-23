@@ -1,35 +1,42 @@
 package com.vortex.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vortex.bean.LoginRequest;
 import com.vortex.bean.RegisterRequest;
 import com.vortex.common.service.CommonService;
-import com.vortex.model.User;
 import com.vortex.security.JwtUtils;
 import com.vortex.security.UserDetailsImpl;
 
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
     
-    @Autowired
-    CommonService commonService;
+    private final CommonService commonService;
+    
+    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, CommonService commonService) {
+    	this.authenticationManager = authenticationManager;
+    	this.jwtUtils = jwtUtils;
+    	this.commonService = commonService;
+    }
 
     @GetMapping("/serverCheck")
     public ResponseEntity<?> serverCheck() {

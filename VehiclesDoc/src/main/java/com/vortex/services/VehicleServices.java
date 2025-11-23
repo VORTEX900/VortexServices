@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vortex.bean.RegisterVehicleRequest;
@@ -25,7 +24,6 @@ public class VehicleServices {
 
 	Logger log = LogManager.getLogger(VehicleServices.class);
 	
-	@Autowired
 	public VehicleServices(VehicleRepository vehicleRepository, TypeVehicleBrandRepository typeVehicleBrandRepository, TypeVehicleFuelRepository typeVehicleFuelRepository, TypeVehicleModelRepository typeVehicleModelRepository, UserRepository userRepository) {
 		this.vehicleRepository = vehicleRepository;
 		this.typeVehicleBrandRepository = typeVehicleBrandRepository;
