@@ -20,7 +20,7 @@ controllare se è tutto ok con "vault --version"
 "vault server -dev" avvia il server in locale in modalità "dev" e vi darà token e key per configurare vault
 nel file di properties aggiornare questo place holder "spring.cloud.vault.token" con la root token che ti restituisce il server vault
 setto il vault address "set VAULT_ADDR=http://127.0.0.1:8200"
-setto il token"set VAULT_TOKEN=hvs.p342uVJo3wbikdQyinphMAx9"
+setto il token"set VAULT_TOKEN= ... "
 setto la possibile secret "vault kv put secret/application vault-config.vortexSecretToken=gXv8qT9rN2w5ZyBhLmPsUkVeXy3a6DfGhJkLzMnBqRtVuWnYp9SrTcXbEzHgKrLv1"
 ritorno la lista dei secret salvati "vault kv list secret/"
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
