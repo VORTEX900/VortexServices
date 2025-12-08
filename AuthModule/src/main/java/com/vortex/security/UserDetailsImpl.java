@@ -24,7 +24,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Puoi convertire il ruolo in authority qui, se necessario
         return Collections.emptyList();
     }
 

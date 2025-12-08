@@ -29,7 +29,6 @@ public class JwtUtils {
 	
     private static final long JWR_EXPIRATION_MS = 86400000; // 1 giorno
 
-    // Metodo helper: converte la secret in chiave compatibile
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(vaultConfig.getVortexSecretToken().getBytes(StandardCharsets.UTF_8));
     }

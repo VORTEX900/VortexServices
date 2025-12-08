@@ -27,7 +27,7 @@ public class SecurityConfig {
 	            .pathMatchers("/auth/**").permitAll()   // login, register, ecc.
 	            .anyExchange().authenticated()          // tutto il resto
 	        )
-	        .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION); // aggiungi il tuo filtro
+	        .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION);
 
 	    return http.build();
 	}
