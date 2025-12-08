@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +41,7 @@ public class VehicleController {
 	}
 	
 	@GetMapping("/serverCheck")
-    public ResponseEntity<?> serverCheck() {
+    public ResponseEntity<Map<String, Object>> serverCheck() {
 
         Map<String, Object> response = new HashMap<>();
         response.put("Response", ">>>SUCCESS<<<");
@@ -52,7 +50,7 @@ public class VehicleController {
     }
 	
 	@PostMapping("/registerVehicle")
-	public ResponseEntity<?> registerVehicle (@Valid @RequestBody RegisterVehicleRequest req,
+	public ResponseEntity<Map<String, String>> registerVehicle (@Valid @RequestBody RegisterVehicleRequest req,
 			@RequestHeader("X-User-Id") String userId
 		    ) {
 		String principal = getPrincipal(userId);
@@ -63,18 +61,18 @@ public class VehicleController {
     }
 	
 	@PostMapping("/updateVehicle")
-	public ResponseEntity<?> updateVehicle (@Valid @RequestBody RegisterVehicleRequest req,
+	public ResponseEntity<Map<String, String>> updateVehicle (@Valid @RequestBody RegisterVehicleRequest req,
 			@RequestHeader("X-User-Id") String userId
 		    ) {
 		String principal = getPrincipal(userId);
 
-		vehicleServices.UpdateVehicle(req, principal);
+		vehicleServices.updateVehicle(req, principal);
 		
         return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
     }
 	
 	@PostMapping("/deleteVehicle")
-	public ResponseEntity<?> deleteVehicle (@Valid @RequestBody DeleteVehicleRequest req,
+	public ResponseEntity<Map<String, String>> deleteVehicle (@Valid @RequestBody DeleteVehicleRequest req,
 			@RequestHeader("X-User-Id") String userId
 		    ) {
 
@@ -88,9 +86,7 @@ public class VehicleController {
 			@RequestHeader("X-User-Id") String userId
 		    ) {
 
-		List<Vehicle> vehicles = vehicleServices.readVehicles(req.getAlias());
-		
-        return vehicles;
+		return vehicleServices.readVehicles(req.getAlias());
     }
 
 	@GetMapping("/whoami")
@@ -106,29 +102,19 @@ public class VehicleController {
 	  }
 	
     @GetMapping("/call-server-check")
-    public ResponseEntity<?> callServerCheck() {
+    public ResponseEntity<Map<String, Object>> callServerCheck() {
         Map<String, Object> responseFromY = feignCheckClient.serverCheck();
         return ResponseEntity.ok(responseFromY);
     }
 	
 	public boolean isAuthenticated(String userId) {
-		
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			if (authentication == null || !authentication.isAuthenticated()) {
-			    return false;
-			}else { 
-				return true;
-			}
+			return !(authentication == null || !authentication.isAuthenticated());
 		}catch(Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		if (userId == null || userId.isEmpty()) {
-	        return false;
-	    }else {
-	    	return true;
-	    }
-		
+		return !(userId == null || userId.isEmpty());
 	}
 	
 	public String getPrincipal(String userId) {

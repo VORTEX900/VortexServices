@@ -34,7 +34,7 @@ public class RegisterVehicleRequest {
     
     private Integer idModel;
     
-    private Integer IdFuel;
+    private Integer idFuel;
     
     private Integer idEmission;
 

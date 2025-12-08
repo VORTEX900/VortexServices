@@ -28,7 +28,7 @@ public class ExpirationController {
 	    }
 	    
 	    @GetMapping("/serverCheck")
-	    public ResponseEntity<?> serverCheck() {
+	    public ResponseEntity<Map<String, Object>> serverCheck() {
 
 	        Map<String, Object> response = new HashMap<>();
 	        response.put("Response", ">>>SUCCESS<<<");

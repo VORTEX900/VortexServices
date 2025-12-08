@@ -6,14 +6,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.vortex.kafka.model.VehicleMSG;
-import com.vortex.service.ReminderProducerService;
 
 @Component
 public class ReminderProducer {
 	
 	private final KafkaTemplate<String, Object> kafkaTemplate;
 	
-	Logger log = LogManager.getLogger(ReminderProducerService.class);
+	Logger log = LogManager.getLogger(ReminderProducer.class);
 	
 	public ReminderProducer(KafkaTemplate<String, Object> kafkaTemplate) {
 		this.kafkaTemplate = kafkaTemplate;

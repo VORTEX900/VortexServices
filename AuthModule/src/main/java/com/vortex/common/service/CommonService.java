@@ -15,14 +15,14 @@ public class CommonService {
 	
 	private final UserRepository userRepository;
 	
-	private final TypeRoleRepository TypeRoleRepository;
+	private final TypeRoleRepository typeRoleRepository;
 	
 	private final SecurityConfig securityConfig;
 	
-	public CommonService(UserRepository userRepository, SecurityConfig securityConfig, TypeRoleRepository TypeRoleRepository) {
+	public CommonService(UserRepository userRepository, SecurityConfig securityConfig, TypeRoleRepository typeRoleRepository) {
 	    this.userRepository = userRepository;
 	    this.securityConfig = securityConfig;
-	    this.TypeRoleRepository = TypeRoleRepository;
+	    this.typeRoleRepository = typeRoleRepository;
 	}
 
 	public boolean existAlias(String alias) {
@@ -37,7 +37,7 @@ public class CommonService {
         User user = new User();
         user.setAlias(registerRequest.getAlias());
         user.setPassword(securityConfig.passwordEncoder().encode(registerRequest.getPassword()));
-        user.setRole(TypeRoleRepository.findById(1).orElseThrow());
+        user.setRole(typeRoleRepository.findById(1).orElseThrow());
         user.setCreationTime(LocalDateTime.now());
         userRepository.save(user);
 

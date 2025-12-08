@@ -14,7 +14,7 @@ public class ReminderConsumer {
 	
 	@KafkaListener(topics = "reminder", groupId = "reminder-group")
 	public void listen(VehicleMSG message) {
-		log.info("Ricevuto messaggio: " + message.getVin() + ", targa: " + message.getLicensePlate());
+		log.info("Ricevuto messaggio: {}{}{}", message.getVin(), ", targa: ", message.getLicensePlate());
 		
 	}
 	

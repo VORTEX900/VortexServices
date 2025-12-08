@@ -1,5 +1,6 @@
 package com.vortex.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -77,7 +78,7 @@ public class VehicleServices {
 		}
 	}
 	
-	public boolean UpdateVehicle(RegisterVehicleRequest vehicleToRegister, String alias) {
+	public boolean updateVehicle(RegisterVehicleRequest vehicleToRegister, String alias) {
 		
 		VehiclePk idVehicle = new VehiclePk();
 		idVehicle.setVin(vehicleToRegister.getVin());
@@ -129,10 +130,9 @@ public class VehicleServices {
 		User user = userRepository.findByAlias(alias);
 		
 		if(vehicleRepository.existsByUser(user)) {
-			List<Vehicle> vehicles = vehicleRepository.findByUser(user);
-			return vehicles;
+			return vehicleRepository.findByUser(user);
 		}else {
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	

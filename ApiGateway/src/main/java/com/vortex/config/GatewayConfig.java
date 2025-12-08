@@ -1,4 +1,6 @@
 package com.vortex.config;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -15,6 +17,8 @@ public class GatewayConfig {
 
 	@Value("${gateway.expiration-uri}")
 	private String expirationUri;
+	
+	Logger log = LogManager.getLogger(GatewayConfig.class);
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, JwtHeaderPropagationFilter headerFilter) {
@@ -33,7 +37,7 @@ public class GatewayConfig {
             		//.uri("http://expiration-service:8082"))//docker
             .build();
 
-        locator.getRoutes().subscribe(route -> System.out.println("Registered route: " + route.getId()));
+        locator.getRoutes().subscribe(route -> log.info("Registered route: {}", route.getId()));
 
         return locator;
     }

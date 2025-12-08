@@ -1,6 +1,5 @@
 package com.vortex.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -22,10 +21,8 @@ import lombok.Setter;
 @EqualsAndHashCode
 @Entity
 @Table(name = "vehicle")
-public class Vehicle implements Serializable{
+public class Vehicle {
 	
-	private static final long serialVersionUID = 1L;
-
 	@EmbeddedId
 	private VehiclePk id;
 	

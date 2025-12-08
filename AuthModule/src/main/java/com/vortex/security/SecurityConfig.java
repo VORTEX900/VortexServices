@@ -1,6 +1,5 @@
 package com.vortex.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,12 +15,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    	this.userDetailsService = userDetailsService;
+    	this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

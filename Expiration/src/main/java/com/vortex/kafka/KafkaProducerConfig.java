@@ -20,11 +20,11 @@ public class KafkaProducerConfig {
 	
 	@Bean
 	ProducerFactory<String, Object> produceFactory(){
-		Map<String, Object> configProperties = new HashMap<String, Object>();
+		Map<String, Object> configProperties = new HashMap<>();
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:"+KAFKA_PORT);
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-		return new DefaultKafkaProducerFactory<String, Object>(configProperties);
+		return new DefaultKafkaProducerFactory<>(configProperties);
 	}
 	
 	@Bean

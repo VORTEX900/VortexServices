@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @GetMapping("/serverCheck")
-    public ResponseEntity<?> serverCheck() {
+    public ResponseEntity<Map<String, Object>> serverCheck() {
 
         Map<String, Object> response = new HashMap<>();
         response.put("Response", ">>>SUCCESS<<<");
@@ -48,7 +48,7 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getAlias(), loginRequest.getPassword()));
@@ -64,7 +64,7 @@ public class AuthController {
     }
 
     @PostMapping("/registerCommonUser")
-    public ResponseEntity<?> registerCommonUser(@Valid @RequestBody RegisterRequest signUpRequest) {
+    public ResponseEntity<Map<String, String>> registerCommonUser(@Valid @RequestBody RegisterRequest signUpRequest) {
         // Controlla se l'alias è già preso (dovrai implementare questa logica nel service o repo)
         if (commonService.existAlias(signUpRequest.getAlias())) {
             return ResponseEntity
@@ -79,7 +79,7 @@ public class AuthController {
     }
     
     @PostMapping("/deleteUserById")
-    public ResponseEntity<?> deleteUserById(@Valid @RequestBody Long idUser) {
+    public ResponseEntity<Map<String, String>> deleteUserById(@Valid @RequestBody Long idUser) {
         // Controlla se l'alias è già preso (dovrai implementare questa logica nel service o repo)
         if (!commonService.existByid(idUser)){
             return ResponseEntity

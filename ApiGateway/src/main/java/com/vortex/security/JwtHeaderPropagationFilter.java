@@ -3,6 +3,7 @@ package com.vortex.security;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -15,7 +16,7 @@ public class JwtHeaderPropagationFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext -> securityContext.getAuthentication())
+                .map(SecurityContext::getAuthentication)
                 .switchIfEmpty(Mono.empty())
                 .flatMap(auth -> {
 

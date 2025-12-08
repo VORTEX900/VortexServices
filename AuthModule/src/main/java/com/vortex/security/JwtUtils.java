@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +21,13 @@ public class JwtUtils {
 
 	private final VaultConfig vaultConfig;
 	
+	Logger log = LogManager.getLogger(JwtUtils.class);
+	
 	public JwtUtils(VaultConfig vaultConfig) {
 		this.vaultConfig = vaultConfig;
 	}
 	
-    private final long jwtExpirationMs = 86400000; // 1 giorno
+    private static final long JWR_EXPIRATION_MS = 86400000; // 1 giorno
 
     // Metodo helper: converte la secret in chiave compatibile
     private SecretKey getKey() {
@@ -34,7 +38,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + JWR_EXPIRATION_MS))
                 .signWith(getKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -56,7 +60,7 @@ public class JwtUtils {
                     .parseClaimsJws(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            System.err.println("Invalid JWT token: " + e.getMessage());
+            log.error("Invalid JWT token: {}", e.getMessage());
         }
         return false;
     }
