@@ -81,12 +81,23 @@ public class VehicleController {
         return ResponseEntity.ok(Map.of("message", "Veicolo registrato con successo!"));
     }
 	
-	@GetMapping("/readVehicle")
-	public List<Vehicle> readVehicle (@Valid @RequestBody ReadVehicleRequest req,
+	@PostMapping("/readVehicle")
+	public List<Map<String, Object>> readVehicle (@Valid @RequestBody ReadVehicleRequest req,
 			@RequestHeader("X-User-Id") String userId
 		    ) {
 
-		return vehicleServices.readVehicles(req.getAlias());
+		List<Vehicle> vehicles = vehicleServices.readVehicles(req.getAlias());
+		
+		return vehicles.stream()
+		        .map(v -> {
+		            Map<String, Object> m = new HashMap<>();
+		            m.put("vin", v.getId().getVin());
+		            m.put("licensePlate", v.getId().getLicensePlate());
+		            m.put("brandName", v.getBrand().getName());
+		            m.put("modelName", v.getModel().getName());
+		            return m;
+		        })
+		        .toList();
     }
 
 	@GetMapping("/whoami")

@@ -36,12 +36,11 @@ public class ReminderProducerService {
 		
 	}
 	
-	public void sendReminders() {
+	public void sendReminders(String vin, String licensePlate) {
 		
-		//TODO PARTE MOCKATA PER ORA
+		
 		List<VehicleMSG> vehicleMSGs = List.of(
-				new VehicleMSG("1A2B3C","FM269SY"),
-				new VehicleMSG("5D6E7F","GN953PE")
+				new VehicleMSG(vin,licensePlate)
 				);
 		
 		vehicleMSGs.forEach(reminderProducer::sendReminder);
